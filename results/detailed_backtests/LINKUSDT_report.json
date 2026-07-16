@@ -1,0 +1,11 @@
+{
+  "symbol": "LINKUSDT",
+  "model_mae": 0.0046591635788530514,
+  "trades": 3497,
+  "cumulative_pnl": -4869.257199971498,
+  "final_equity": 5130.742800028502,
+  "mean_pnl": -1.3924098369949964,
+  "pnl_vol": 4.95724071199232,
+  "sharpe_approx": -26.298308047567968,
+  "max_drawdown": -4881.054050707366
+}

@@ -1,0 +1,23 @@
+{
+  "symbol": "INJUSDT",
+  "n_rows": 17486,
+  "n_test": 3498,
+  "return_mae": 0.009126271950335763,
+  "price_mae": 0.03829142553820618,
+  "naive_price_mae": 0.0329190966266438,
+  "price_improvement_ratio": 0.8596989055369064,
+  "direction_accuracy": 0.4942824471126358,
+  "threshold": 0.002,
+  "position_frac": 0.01,
+  "stop_loss_pct": 0.005,
+  "take_profit_pct": 0.01,
+  "trade_count": 1046,
+  "cumulative_pnl": -254.60432373800091,
+  "final_equity": 9745.395676262007,
+  "mean_pnl": -0.2434075752753355,
+  "pnl_vol": 0.5442059271125743,
+  "sharpe": -41.876613702718934,
+  "max_drawdown": -256.98693231384823,
+  "tp_count": 153,
+  "sl_count": 513
+}

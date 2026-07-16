@@ -1,0 +1,145 @@
+[
+  {
+    "symbol": "AAVEUSDT",
+    "model_mae": 0.008069712640797519,
+    "trades": 3497,
+    "cumulative_pnl": -5504.478194191477,
+    "final_equity": 4495.521805808523,
+    "mean_pnl": -1.5740572474096342,
+    "pnl_vol": 5.927270791599373,
+    "sharpe_approx": -24.863741831679764,
+    "max_drawdown": -5535.200202461932
+  },
+  {
+    "symbol": "BNBUSDT",
+    "model_mae": 0.0030653407632478683,
+    "trades": 3497,
+    "cumulative_pnl": -4838.539113519077,
+    "final_equity": 5161.460886480923,
+    "mean_pnl": -1.3836257116153945,
+    "pnl_vol": 3.378097970957144,
+    "sharpe_approx": -38.34838830207261,
+    "max_drawdown": -4841.673154977016
+  },
+  {
+    "symbol": "BTCUSDT",
+    "model_mae": 0.003151339254403814,
+    "trades": 3497,
+    "cumulative_pnl": -5156.305483660156,
+    "final_equity": 4843.694516339844,
+    "mean_pnl": -1.4744939901801963,
+    "pnl_vol": 3.5358262313618494,
+    "sharpe_approx": -39.04386716286903,
+    "max_drawdown": -5153.5363845198335
+  },
+  {
+    "symbol": "DOGEUSDT",
+    "model_mae": 0.004758638068314844,
+    "trades": 3497,
+    "cumulative_pnl": -5173.181264982794,
+    "final_equity": 4826.818735017206,
+    "mean_pnl": -1.4793197783765484,
+    "pnl_vol": 4.901901112559714,
+    "sharpe_approx": -28.255191238959853,
+    "max_drawdown": -5167.836942357456
+  },
+  {
+    "symbol": "ETHUSDT",
+    "model_mae": 0.004037626782773926,
+    "trades": 3497,
+    "cumulative_pnl": -4912.210965197542,
+    "final_equity": 5087.789034802458,
+    "mean_pnl": -1.404692869659001,
+    "pnl_vol": 4.640212319159259,
+    "sharpe_approx": -28.34289829233185,
+    "max_drawdown": -4911.369180613911
+  },
+  {
+    "symbol": "HYPEUSDT",
+    "model_mae": 0.007813273618573792,
+    "trades": 2196,
+    "cumulative_pnl": -3412.689062405225,
+    "final_equity": 6587.310937594775,
+    "mean_pnl": -1.5540478426253246,
+    "pnl_vol": 7.774120912993044,
+    "sharpe_approx": -18.716034061228033,
+    "max_drawdown": -3405.7401459395605
+  },
+  {
+    "symbol": "INJUSDT",
+    "model_mae": 0.009322630248633654,
+    "trades": 3497,
+    "cumulative_pnl": -5025.121010446693,
+    "final_equity": 4974.878989553307,
+    "mean_pnl": -1.4369805577485504,
+    "pnl_vol": 7.381936425148712,
+    "sharpe_approx": -18.225578605975787,
+    "max_drawdown": -5099.741854692259
+  },
+  {
+    "symbol": "KASUSDT",
+    "model_mae": 0.006204992638098715,
+    "trades": 6196,
+    "cumulative_pnl": -6868.628777558083,
+    "final_equity": 3131.371222441917,
+    "mean_pnl": -1.1085585502837438,
+    "pnl_vol": 6.612295651139744,
+    "sharpe_approx": -15.696654732098349,
+    "max_drawdown": -6861.995534858913
+  },
+  {
+    "symbol": "LINKUSDT",
+    "model_mae": 0.0046591635788530514,
+    "trades": 3497,
+    "cumulative_pnl": -4869.257199971498,
+    "final_equity": 5130.742800028502,
+    "mean_pnl": -1.3924098369949964,
+    "pnl_vol": 4.95724071199232,
+    "sharpe_approx": -26.298308047567968,
+    "max_drawdown": -4881.054050707366
+  },
+  {
+    "symbol": "ONDOUSDT",
+    "model_mae": 0.008159481592089414,
+    "trades": 2205,
+    "cumulative_pnl": -3681.858263965474,
+    "final_equity": 6318.141736034526,
+    "mean_pnl": -1.6697769904605273,
+    "pnl_vol": 9.362420119608512,
+    "sharpe_approx": -16.698254658578776,
+    "max_drawdown": -3716.3179831971647
+  },
+  {
+    "symbol": "RENDERUSDT",
+    "model_mae": 0.006927751306714237,
+    "trades": 3449,
+    "cumulative_pnl": -4899.465544685033,
+    "final_equity": 5100.534455314967,
+    "mean_pnl": -1.4205466931531008,
+    "pnl_vol": 7.188350483607174,
+    "sharpe_approx": -18.502354715654132,
+    "max_drawdown": -4953.159370330629
+  },
+  {
+    "symbol": "SOLUSDT",
+    "model_mae": 0.005415925161126702,
+    "trades": 3497,
+    "cumulative_pnl": -4599.751039892589,
+    "final_equity": 5400.248960107411,
+    "mean_pnl": -1.3153420188425942,
+    "pnl_vol": 5.225616209916266,
+    "sharpe_approx": -23.566870581251067,
+    "max_drawdown": -4660.02748541838
+  },
+  {
+    "symbol": "SUIUSDT",
+    "model_mae": 0.0058825051061444705,
+    "trades": 3497,
+    "cumulative_pnl": -4942.741366637207,
+    "final_equity": 5057.258633362793,
+    "mean_pnl": -1.4134233247461219,
+    "pnl_vol": 6.156927433252795,
+    "sharpe_approx": -21.49358959715968,
+    "max_drawdown": -4953.069770515417
+  }
+]

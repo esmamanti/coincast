@@ -1,0 +1,11 @@
+{
+  "symbol": "AAVEUSDT",
+  "model_mae": 0.008069712640797519,
+  "trades": 3497,
+  "cumulative_pnl": -5504.478194191477,
+  "final_equity": 4495.521805808523,
+  "mean_pnl": -1.5740572474096342,
+  "pnl_vol": 5.927270791599373,
+  "sharpe_approx": -24.863741831679764,
+  "max_drawdown": -5535.200202461932
+}

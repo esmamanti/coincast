@@ -1,0 +1,11 @@
+{
+  "symbol": "SOLUSDT",
+  "model_mae": 0.005415925161126702,
+  "trades": 3497,
+  "cumulative_pnl": -4599.751039892589,
+  "final_equity": 5400.248960107411,
+  "mean_pnl": -1.3153420188425942,
+  "pnl_vol": 5.225616209916266,
+  "sharpe_approx": -23.566870581251067,
+  "max_drawdown": -4660.02748541838
+}

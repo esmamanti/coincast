@@ -1,0 +1,23 @@
+{
+  "symbol": "BTCUSDT",
+  "n_rows": 17486,
+  "n_test": 3498,
+  "return_mae": 0.0031604867950408323,
+  "price_mae": 218.22286386199139,
+  "naive_price_mae": 215.0809233847913,
+  "price_improvement_ratio": 0.9856021480902794,
+  "direction_accuracy": 0.4957118353344768,
+  "threshold": 0.002,
+  "position_frac": 0.01,
+  "stop_loss_pct": 0.005,
+  "take_profit_pct": 0.01,
+  "trade_count": 55,
+  "cumulative_pnl": -8.592075547186166,
+  "final_equity": 9991.407924452815,
+  "mean_pnl": -0.15621955540338484,
+  "pnl_vol": 0.5454808348568806,
+  "sharpe": -26.813693089660603,
+  "max_drawdown": -8.967788215837572,
+  "tp_count": 8,
+  "sl_count": 21
+}

@@ -1,0 +1,23 @@
+{
+  "symbol": "ETHUSDT",
+  "n_rows": 17486,
+  "n_test": 3498,
+  "return_mae": 0.004018539996765047,
+  "price_mae": 8.008840123611291,
+  "naive_price_mae": 7.834079473985134,
+  "price_improvement_ratio": 0.9781790313043038,
+  "direction_accuracy": 0.5008576329331046,
+  "threshold": 0.002,
+  "position_frac": 0.01,
+  "stop_loss_pct": 0.005,
+  "take_profit_pct": 0.01,
+  "trade_count": 202,
+  "cumulative_pnl": -33.997209728746185,
+  "final_equity": 9966.002790271252,
+  "mean_pnl": -0.16830301845913953,
+  "pnl_vol": 0.584052370602297,
+  "sharpe": -26.979931774172396,
+  "max_drawdown": -34.793429982823,
+  "tp_count": 39,
+  "sl_count": 86
+}

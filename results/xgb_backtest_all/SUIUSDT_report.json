@@ -1,0 +1,23 @@
+{
+  "symbol": "SUIUSDT",
+  "n_rows": 17486,
+  "n_test": 3498,
+  "return_mae": 0.00575077028747339,
+  "price_mae": 0.00517589740141962,
+  "naive_price_mae": 0.005058976558033162,
+  "price_improvement_ratio": 0.9774105175743264,
+  "direction_accuracy": 0.4942824471126358,
+  "threshold": 0.002,
+  "position_frac": 0.01,
+  "stop_loss_pct": 0.005,
+  "take_profit_pct": 0.01,
+  "trade_count": 324,
+  "cumulative_pnl": -85.4923523161969,
+  "final_equity": 9914.507647683798,
+  "mean_pnl": -0.26386528492653366,
+  "pnl_vol": 0.6045190393831706,
+  "sharpe": -40.8670233749512,
+  "max_drawdown": -86.78562276036973,
+  "tp_count": 64,
+  "sl_count": 192
+}

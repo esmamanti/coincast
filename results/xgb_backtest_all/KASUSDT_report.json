@@ -1,0 +1,23 @@
+{
+  "symbol": "KASUSDT",
+  "n_rows": 30984,
+  "n_test": 6197,
+  "return_mae": 0.006189940966222045,
+  "price_mae": 0.00023923691106435087,
+  "naive_price_mae": 0.00023754461836372442,
+  "price_improvement_ratio": 0.9929262892874785,
+  "direction_accuracy": 0.4984670001613684,
+  "threshold": 0.002,
+  "position_frac": 0.01,
+  "stop_loss_pct": 0.005,
+  "take_profit_pct": 0.01,
+  "trade_count": 369,
+  "cumulative_pnl": -81.09913808747282,
+  "final_equity": 9918.900861912518,
+  "mean_pnl": -0.2197808620256716,
+  "pnl_vol": 0.618253466338685,
+  "sharpe": -33.28312113436991,
+  "max_drawdown": -81.70739867080374,
+  "tp_count": 80,
+  "sl_count": 203
+}

@@ -1,0 +1,11 @@
+{
+  "symbol": "ETHUSDT",
+  "model_mae": 0.004037626782773926,
+  "trades": 3497,
+  "cumulative_pnl": -4912.210965197542,
+  "final_equity": 5087.789034802458,
+  "mean_pnl": -1.404692869659001,
+  "pnl_vol": 4.640212319159259,
+  "sharpe_approx": -28.34289829233185,
+  "max_drawdown": -4911.369180613911
+}

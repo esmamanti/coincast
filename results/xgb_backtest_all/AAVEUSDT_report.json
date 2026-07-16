@@ -1,0 +1,23 @@
+{
+  "symbol": "AAVEUSDT",
+  "n_rows": 17486,
+  "n_test": 3498,
+  "return_mae": 0.006663921850406017,
+  "price_mae": 0.6160495738375862,
+  "naive_price_mae": 0.5600800457404231,
+  "price_improvement_ratio": 0.9091476879879821,
+  "direction_accuracy": 0.4854202401372213,
+  "threshold": 0.002,
+  "position_frac": 0.01,
+  "stop_loss_pct": 0.005,
+  "take_profit_pct": 0.01,
+  "trade_count": 1034,
+  "cumulative_pnl": -251.66472553378009,
+  "final_equity": 9748.335274466204,
+  "mean_pnl": -0.24338948310810454,
+  "pnl_vol": 0.5806296588409712,
+  "sharpe": -39.24671625633416,
+  "max_drawdown": -251.7641697687177,
+  "tp_count": 183,
+  "sl_count": 560
+}

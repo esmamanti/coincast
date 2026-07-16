@@ -1,0 +1,23 @@
+{
+  "symbol": "ONDOUSDT",
+  "n_rows": 11026,
+  "n_test": 2206,
+  "return_mae": 0.008187665878384515,
+  "price_mae": 0.002883758526564941,
+  "naive_price_mae": 0.0028497280145058923,
+  "price_improvement_ratio": 0.9881992504762231,
+  "direction_accuracy": 0.5054397098821396,
+  "threshold": 0.002,
+  "position_frac": 0.01,
+  "stop_loss_pct": 0.005,
+  "take_profit_pct": 0.01,
+  "trade_count": 635,
+  "cumulative_pnl": -163.5912799427589,
+  "final_equity": 9836.40872005724,
+  "mean_pnl": -0.2576240629019825,
+  "pnl_vol": 0.6439223132988885,
+  "sharpe": -37.45878473951864,
+  "max_drawdown": -163.9264785657706,
+  "tp_count": 154,
+  "sl_count": 418
+}

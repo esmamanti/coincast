@@ -1,0 +1,23 @@
+{
+  "symbol": "LINKUSDT",
+  "n_rows": 17486,
+  "n_test": 3498,
+  "return_mae": 0.004610823935721878,
+  "price_mae": 0.040296358647756804,
+  "naive_price_mae": 0.039198113207547174,
+  "price_improvement_ratio": 0.972745789518856,
+  "direction_accuracy": 0.4588336192109777,
+  "threshold": 0.002,
+  "position_frac": 0.01,
+  "stop_loss_pct": 0.005,
+  "take_profit_pct": 0.01,
+  "trade_count": 412,
+  "cumulative_pnl": -82.25021040358237,
+  "final_equity": 9917.74978959643,
+  "mean_pnl": -0.1996364330184038,
+  "pnl_vol": 0.542679257156248,
+  "sharpe": -34.44270982960975,
+  "max_drawdown": -83.84355903233518,
+  "tp_count": 52,
+  "sl_count": 177
+}

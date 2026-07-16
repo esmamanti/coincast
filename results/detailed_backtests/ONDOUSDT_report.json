@@ -1,0 +1,11 @@
+{
+  "symbol": "ONDOUSDT",
+  "model_mae": 0.008159481592089414,
+  "trades": 2205,
+  "cumulative_pnl": -3681.858263965474,
+  "final_equity": 6318.141736034526,
+  "mean_pnl": -1.6697769904605273,
+  "pnl_vol": 9.362420119608512,
+  "sharpe_approx": -16.698254658578776,
+  "max_drawdown": -3716.3179831971647
+}

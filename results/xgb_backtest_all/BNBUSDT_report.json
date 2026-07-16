@@ -1,0 +1,23 @@
+{
+  "symbol": "BNBUSDT",
+  "n_rows": 17486,
+  "n_test": 3498,
+  "return_mae": 0.003063446832694075,
+  "price_mae": 1.9004430006482793,
+  "naive_price_mae": 1.8842081189251,
+  "price_improvement_ratio": 0.9914573172057035,
+  "direction_accuracy": 0.4968553459119497,
+  "threshold": 0.002,
+  "position_frac": 0.01,
+  "stop_loss_pct": 0.005,
+  "take_profit_pct": 0.01,
+  "trade_count": 49,
+  "cumulative_pnl": -6.986907220117673,
+  "final_equity": 9993.01309277988,
+  "mean_pnl": -0.1425899432677076,
+  "pnl_vol": 0.646077700583772,
+  "sharpe": -20.663547257312494,
+  "max_drawdown": -8.833153225887145,
+  "tp_count": 13,
+  "sl_count": 25
+}

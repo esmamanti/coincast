@@ -1,0 +1,11 @@
+{
+  "symbol": "DOGEUSDT",
+  "model_mae": 0.004758638068314844,
+  "trades": 3497,
+  "cumulative_pnl": -5173.181264982794,
+  "final_equity": 4826.818735017206,
+  "mean_pnl": -1.4793197783765484,
+  "pnl_vol": 4.901901112559714,
+  "sharpe_approx": -28.255191238959853,
+  "max_drawdown": -5167.836942357456
+}

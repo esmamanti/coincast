@@ -1,0 +1,11 @@
+{
+  "symbol": "HYPEUSDT",
+  "model_mae": 0.007813273618573792,
+  "trades": 2196,
+  "cumulative_pnl": -3412.689062405225,
+  "final_equity": 6587.310937594775,
+  "mean_pnl": -1.5540478426253246,
+  "pnl_vol": 7.774120912993044,
+  "sharpe_approx": -18.716034061228033,
+  "max_drawdown": -3405.7401459395605
+}

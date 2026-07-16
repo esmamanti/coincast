@@ -1,0 +1,23 @@
+{
+  "symbol": "SOLUSDT",
+  "n_rows": 17486,
+  "n_test": 3498,
+  "return_mae": 0.0050441244431295475,
+  "price_mae": 0.40706189828933875,
+  "naive_price_mae": 0.3584476843910804,
+  "price_improvement_ratio": 0.8805729199845094,
+  "direction_accuracy": 0.49942824471126357,
+  "threshold": 0.002,
+  "position_frac": 0.01,
+  "stop_loss_pct": 0.005,
+  "take_profit_pct": 0.01,
+  "trade_count": 1657,
+  "cumulative_pnl": -355.7145103881399,
+  "final_equity": 9644.28548961189,
+  "mean_pnl": -0.2146738143561496,
+  "pnl_vol": 0.467330102476636,
+  "sharpe": -43.00867366737639,
+  "max_drawdown": -355.0150102631105,
+  "tp_count": 160,
+  "sl_count": 574
+}

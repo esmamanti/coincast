@@ -1,0 +1,23 @@
+{
+  "symbol": "HYPEUSDT",
+  "n_rows": 10984,
+  "n_test": 2197,
+  "return_mae": 0.007915300354450497,
+  "price_mae": 0.46731293692825376,
+  "naive_price_mae": 0.4142603550295858,
+  "price_improvement_ratio": 0.88647311532312,
+  "direction_accuracy": 0.5034137460172963,
+  "threshold": 0.002,
+  "position_frac": 0.01,
+  "stop_loss_pct": 0.005,
+  "take_profit_pct": 0.01,
+  "trade_count": 798,
+  "cumulative_pnl": -214.545392610004,
+  "final_equity": 9785.454607389993,
+  "mean_pnl": -0.2688538754511328,
+  "pnl_vol": 0.6200104699217014,
+  "sharpe": -40.599250006620416,
+  "max_drawdown": -214.54539261000718,
+  "tp_count": 173,
+  "sl_count": 513
+}

@@ -1,0 +1,23 @@
+{
+  "symbol": "RENDERUSDT",
+  "n_rows": 17248,
+  "n_test": 3450,
+  "return_mae": 0.006933349884217777,
+  "price_mae": 0.012227916476864744,
+  "naive_price_mae": 0.01213768115942029,
+  "price_improvement_ratio": 0.9926205484298835,
+  "direction_accuracy": 0.4895652173913044,
+  "threshold": 0.002,
+  "position_frac": 0.01,
+  "stop_loss_pct": 0.005,
+  "take_profit_pct": 0.01,
+  "trade_count": 243,
+  "cumulative_pnl": -59.03328124627192,
+  "final_equity": 9940.966718753732,
+  "mean_pnl": -0.24293531377066632,
+  "pnl_vol": 0.651418944692855,
+  "sharpe": -34.916523659602774,
+  "max_drawdown": -59.9283374348488,
+  "tp_count": 62,
+  "sl_count": 153
+}

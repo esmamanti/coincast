@@ -1,0 +1,23 @@
+{
+  "symbol": "DOGEUSDT",
+  "n_rows": 17486,
+  "n_test": 3498,
+  "return_mae": 0.005060717115280265,
+  "price_mae": 0.00046292786957997467,
+  "naive_price_mae": 0.0004122813036020583,
+  "price_improvement_ratio": 0.890595124411349,
+  "direction_accuracy": 0.4939965694682676,
+  "threshold": 0.002,
+  "position_frac": 0.01,
+  "stop_loss_pct": 0.005,
+  "take_profit_pct": 0.01,
+  "trade_count": 1108,
+  "cumulative_pnl": -244.11166706586835,
+  "final_equity": 9755.88833293415,
+  "mean_pnl": -0.22031738904861764,
+  "pnl_vol": 0.4769408459833943,
+  "sharpe": -43.249888446002224,
+  "max_drawdown": -244.91066731584942,
+  "tp_count": 100,
+  "sl_count": 404
+}

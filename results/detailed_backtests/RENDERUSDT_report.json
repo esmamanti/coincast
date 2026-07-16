@@ -1,0 +1,11 @@
+{
+  "symbol": "RENDERUSDT",
+  "model_mae": 0.006927751306714237,
+  "trades": 3449,
+  "cumulative_pnl": -4899.465544685033,
+  "final_equity": 5100.534455314967,
+  "mean_pnl": -1.4205466931531008,
+  "pnl_vol": 7.188350483607174,
+  "sharpe_approx": -18.502354715654132,
+  "max_drawdown": -4953.159370330629
+}
