@@ -1,0 +1,12 @@
+python-binance
+pandas
+numpy
+pandas-ta
+scikit-learn
+xgboost
+torch
+matplotlib
+seaborn
+backtesting
+python-dotenv
+jupyter
