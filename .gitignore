@@ -8,3 +8,5 @@ data/*.csv
 .ipynb_checkpoints/
 models_saved/*.pt
 models_saved/*.h5
+
+data_processed/*.csv
