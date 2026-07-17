@@ -2,12 +2,19 @@ import pandas as pd
 from sklearn.preprocessing import StandardScaler
 
 
-def chronological_split(df: pd.DataFrame, test_ratio: float = 0.2):
+def chronological_split(df: pd.DataFrame, test_ratio: float = 0.2, min_train_rows: int = 1):
     """
-    Zaman serisinde rastgele split YAPILMAZ - veri sızıntısına yol açar.
-    Son %test_ratio kısmı test seti olarak ayrılır.
+    Time-series split: the most recent test_ratio portion is reserved for testing.
+    This avoids data leakage that would happen with random splitting.
     """
+    if len(df) < 2:
+        raise ValueError("Dataframe must contain at least two rows")
+
     split_idx = int(len(df) * (1 - test_ratio))
+    split_idx = max(min_train_rows, split_idx)
+    if split_idx >= len(df):
+        raise ValueError("Not enough rows for a valid train/test split")
+
     train = df.iloc[:split_idx]
     test = df.iloc[split_idx:]
     return train, test

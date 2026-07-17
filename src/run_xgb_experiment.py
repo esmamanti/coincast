@@ -1,10 +1,17 @@
 import os
+import sys
 import json
 import pandas as pd
 import numpy as np
 import joblib
 from sklearn.metrics import mean_absolute_error
 import xgboost as xgb
+
+ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+if ROOT not in sys.path:
+    sys.path.append(ROOT)
+
+from src.split import chronological_split
 
 SYMBOL = 'ETHUSDT'
 DATA_PATH = f'data_processed/{SYMBOL}_features.csv'
@@ -18,9 +25,7 @@ print(f'Loading {SYMBOL} features from {DATA_PATH}')
 df = pd.read_csv(DATA_PATH, parse_dates=['open_time']).set_index('open_time')
 feature_cols = [c for c in df.columns if c not in ['open', 'high', 'low', 'close', 'target', 'target_return']]
 
-split = int(len(df) * 0.8)
-train = df.iloc[:split]
-test = df.iloc[split:]
+train, test = chronological_split(df, test_ratio=0.2)
 
 X_train = train[feature_cols]
 y_train = train['target_return']
