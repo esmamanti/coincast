@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./ml_backend
+    ports:
+      - "8000:8000"
+    environment:
+      - ENV=development
+      - ALLOWED_ORIGINS=http://localhost:5173,http://127.0.0.1:5173
+    volumes:
+      - ./ml_backend:/app
+
+  frontend:
+    image: nginx:alpine
+    ports:
+      - "5173:80"
+    volumes:
+      - ./coincast-pulse:/usr/share/nginx/html:ro
