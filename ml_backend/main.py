@@ -1,6 +1,9 @@
 import os
 import logging
-from datetime import datetime, timedelta
+import joblib
+import pandas as pd
+from datetime import datetime, timedelta, timezone
+from pathlib import Path
 from typing import Dict, Optional
 
 from fastapi import FastAPI, HTTPException, Request
@@ -9,6 +12,10 @@ from pydantic import BaseModel
 from dotenv import load_dotenv
 
 load_dotenv()
+
+ROOT = Path(__file__).resolve().parents[1]
+MODEL_PATH = ROOT / "models_saved" / "xgb_ethusdt_return.pkl"
+DATA_PATH = ROOT / "data_processed" / "ETHUSDT_features.csv"
 
 app = FastAPI(title="CoinCast ML Backend", version="1.0.0")
 
@@ -76,8 +83,23 @@ def set_cached_prediction(symbol: str, horizon: int, payload: Dict[str, object])
     key = get_cache_key(symbol, horizon)
     CACHE[key] = {
         **payload,
-        "expires_at": datetime.utcnow() + timedelta(seconds=CACHE_TTL_SECONDS),
+        "expires_at": datetime.now(timezone.utc) + timedelta(seconds=CACHE_TTL_SECONDS),
     }
+
+
+def load_model_and_features() -> tuple[object, pd.DataFrame]:
+    if not MODEL_PATH.exists():
+        raise FileNotFoundError(f"Model not found at {MODEL_PATH}")
+    if not DATA_PATH.exists():
+        raise FileNotFoundError(f"Feature data not found at {DATA_PATH}")
+
+    model = joblib.load(MODEL_PATH)
+    df = pd.read_csv(DATA_PATH, parse_dates=["open_time"]).set_index("open_time")
+    return model, df
+
+
+MODEL, FEATURE_DF = load_model_and_features()
+FEATURE_COLUMNS = [c for c in FEATURE_DF.columns if c not in ["open", "high", "low", "close", "target", "target_return"]]
 
 
 @app.get("/health", response_model=HealthResponse)
@@ -85,7 +107,7 @@ def health() -> HealthResponse:
     logger.info("Health check requested")
     return HealthResponse(
         status="ok",
-        timestamp=datetime.utcnow().isoformat(),
+        timestamp=datetime.now(timezone.utc).isoformat(),
         config={
             "allowed_origins": ",".join(ALLOWED_ORIGINS),
             "cache_ttl_seconds": str(CACHE_TTL_SECONDS),
@@ -107,15 +129,19 @@ def predict(payload: PredictionRequest, request: Request) -> PredictionResponse:
         if not payload.symbol:
             raise ValueError("symbol is required")
 
-        # Lightweight prediction placeholder for now; this can be replaced by the trained model pipeline later.
-        predicted_return = 0.0012 if payload.horizon <= 1 else 0.0034
+        symbol = payload.symbol.upper()
+
+        model = MODEL
+        feature_df = FEATURE_DF.copy()
+        latest_row = feature_df.iloc[[-1]][FEATURE_COLUMNS]
+        predicted_return = float(model.predict(latest_row)[0])
 
         response_payload = {
-            "symbol": payload.symbol.upper(),
+            "symbol": symbol,
             "horizon": payload.horizon,
             "predicted_return": predicted_return,
-            "generated_at": datetime.utcnow().isoformat(),
-            "source": "mock_model",
+            "generated_at": datetime.now(timezone.utc).isoformat(),
+            "source": "xgb_model",
         }
         set_cached_prediction(payload.symbol, payload.horizon, response_payload)
         return PredictionResponse(**response_payload)
