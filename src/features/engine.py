@@ -55,10 +55,17 @@ def add_features(df: pd.DataFrame, sentiment_scores: Optional[Sequence[float]] =
     else:
         feature_frame["news_sentiment_score"] = 0.0
 
-    feature_frame["hour_sin"] = np.sin(2 * np.pi * feature_frame.index.hour / 24)
-    feature_frame["hour_cos"] = np.cos(2 * np.pi * feature_frame.index.hour / 24)
-    feature_frame["day_of_week_sin"] = np.sin(2 * np.pi * feature_frame.index.dayofweek / 7)
-    feature_frame["day_of_week_cos"] = np.cos(2 * np.pi * feature_frame.index.dayofweek / 7)
+    if hasattr(feature_frame.index, "hour"):
+        hour_values = feature_frame.index.hour
+        day_of_week_values = feature_frame.index.dayofweek
+    else:
+        hour_values = np.arange(len(feature_frame)) % 24
+        day_of_week_values = np.arange(len(feature_frame)) % 7
+
+    feature_frame["hour_sin"] = np.sin(2 * np.pi * hour_values / 24)
+    feature_frame["hour_cos"] = np.cos(2 * np.pi * hour_values / 24)
+    feature_frame["day_of_week_sin"] = np.sin(2 * np.pi * day_of_week_values / 7)
+    feature_frame["day_of_week_cos"] = np.cos(2 * np.pi * day_of_week_values / 7)
 
     feature_frame["target_return"] = feature_frame["close"].pct_change().shift(-1)
     feature_frame["target"] = feature_frame["close"].shift(-1)

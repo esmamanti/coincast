@@ -24,6 +24,7 @@ class PredictionResponse(BaseModel):
     symbol: str
     horizon: int
     predicted_return: float
+    confidence_interval: dict[str, float]
     generated_at: str
     source: str
 

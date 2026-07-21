@@ -21,6 +21,9 @@ class BackendPredictTests(unittest.TestCase):
         payload = response.json()
         self.assertEqual(payload["symbol"], "BTCUSDT")
         self.assertIn("predicted_return", payload)
+        self.assertIn("confidence_interval", payload)
+        self.assertIn("lower", payload["confidence_interval"])
+        self.assertIn("upper", payload["confidence_interval"])
         self.assertNotEqual(payload.get("source"), "mock_model")
 
 
