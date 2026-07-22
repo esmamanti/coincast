@@ -1,10 +1,10 @@
 {
   "symbol": "ETHUSDT",
   "n_test": 3498,
-  "return_mae": 0.004018539996765047,
-  "price_mae": 8.008840123611291,
+  "return_mae": 0.0040742569128036305,
+  "price_mae": 8.137789022370432,
   "naive_price_mae": 7.834079473985134,
-  "price_improvement_ratio": 0.9781790313043038,
-  "strategy_cumulative_return": -0.23093753670927725,
-  "strategy_mean_return": -6.603875799521798e-05
+  "price_improvement_ratio": 0.9626791076113654,
+  "strategy_cumulative_return": 0.09662254636380942,
+  "strategy_mean_return": 2.76301247823304e-05
 }

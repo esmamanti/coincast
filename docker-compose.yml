@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   backend:
     build:
@@ -25,3 +23,29 @@ services:
     volumes:
       - ./coincast-pulse:/app
       - /app/node_modules
+
+  paper-trader:
+    profiles: ["paper"]
+    build:
+      context: .
+      dockerfile: ml_backend/Dockerfile
+    environment:
+      - PAPER_TRADING_ENABLED=true
+      - PAPER_DB_PATH=/app/data/paper_trading.sqlite3
+    env_file:
+      - path: .env
+        required: false
+    volumes:
+      - .:/app
+    command: python -m src.run_paper_trader --symbols BTCUSDT ETHUSDT --horizon 1 --every-seconds 3600
+
+  forecast-tracker:
+    profiles: ["paper"]
+    build:
+      context: .
+      dockerfile: ml_backend/Dockerfile
+    environment:
+      - PREDICTION_DB_PATH=/app/data/prediction_tracking.sqlite3
+    volumes:
+      - .:/app
+    command: python -m src.run_forecast_tracker --every-seconds 3600

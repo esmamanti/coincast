@@ -3,8 +3,12 @@ venv/
 .venv/
 __pycache__/
 *.pyc
-data/*.csv
+*.sqlite3
+*.pid
 .env
+results/daily_report_*.json
+results/daily_report_latest.txt
+data/*.csv
 .ipynb_checkpoints/
 models_saved/*.pt
 models_saved/*.h5

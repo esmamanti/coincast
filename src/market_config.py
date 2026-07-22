@@ -1,0 +1,17 @@
+COINCAST_SYMBOLS = [
+    "BTCUSDT",
+    "ETHUSDT",
+    "SOLUSDT",
+    "BNBUSDT",
+    "DOGEUSDT",
+    "LINKUSDT",
+    "AAVEUSDT",
+    "HYPEUSDT",
+    "INJUSDT",
+    "KASUSDT",
+    "ONDOUSDT",
+    "RENDERUSDT",
+    "SUIUSDT",
+]
+
+COINCAST_HORIZONS = [1, 4, 24]

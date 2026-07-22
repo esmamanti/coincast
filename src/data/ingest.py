@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import os
+import re
 from pathlib import Path
 from typing import Optional
 
@@ -18,9 +18,65 @@ def ensure_directory(path: Path) -> None:
     path.mkdir(parents=True, exist_ok=True)
 
 
-def fetch_binance_klines(symbol: str, interval: str = "1h", limit: int = 500) -> pd.DataFrame:
-    """Placeholder ingest function for a future Binance API integration."""
-    raise NotImplementedError("Binance API integration is not wired yet")
+SUPPORTED_INTERVALS = {"1m", "3m", "5m", "15m", "30m", "1h", "2h", "4h", "6h", "8h", "12h", "1d"}
+SYMBOL_PATTERN = re.compile(r"^[A-Z0-9]{5,20}$")
+
+
+def normalize_symbol(symbol: str) -> str:
+    normalized = symbol.strip().upper()
+    if not SYMBOL_PATTERN.fullmatch(normalized):
+        raise ValueError("Symbol must contain only 5-20 uppercase letters or digits")
+    return normalized
+
+
+def fetch_binance_klines(
+    symbol: str,
+    interval: str = "1h",
+    limit: int = 500,
+    closed_only: bool = True,
+) -> pd.DataFrame:
+    """Fetch recent public spot candles from Binance without API credentials."""
+    from binance.client import Client
+
+    normalized_symbol = normalize_symbol(symbol)
+    if interval not in SUPPORTED_INTERVALS:
+        raise ValueError(f"Unsupported interval: {interval}")
+    if limit < 2 or limit > 1000:
+        raise ValueError("Kline limit must be between 2 and 1000")
+
+    client = Client()
+    market_source = "binance_spot_closed_candles"
+    try:
+        rows = client.get_klines(symbol=normalized_symbol, interval=interval, limit=limit)
+    except Exception as exc:
+        if getattr(exc, "code", None) != -1121:
+            raise
+        rows = client.futures_klines(symbol=normalized_symbol, interval=interval, limit=limit)
+        market_source = "binance_futures_closed_candles"
+    columns = [
+        "open_time", "open", "high", "low", "close", "volume",
+        "close_time", "quote_asset_volume", "trades", "taker_buy_base",
+        "taker_buy_quote", "ignore",
+    ]
+    frame = pd.DataFrame(rows, columns=columns)
+    if frame.empty:
+        return pd.DataFrame(columns=["open_time", "open", "high", "low", "close", "volume"])
+
+    frame["open_time"] = pd.to_datetime(frame["open_time"], unit="ms", utc=True)
+    frame["close_time"] = pd.to_datetime(frame["close_time"], unit="ms", utc=True)
+    numeric_columns = ["open", "high", "low", "close", "volume"]
+    frame[numeric_columns] = frame[numeric_columns].astype(float)
+    if closed_only:
+        frame = frame.loc[frame["close_time"] <= pd.Timestamp.now(tz="UTC")]
+
+    result = (
+        frame[["open_time", *numeric_columns]]
+        .sort_values("open_time")
+        .drop_duplicates(subset="open_time", keep="last")
+        .reset_index(drop=True)
+    )
+    result.attrs["market_source"] = market_source
+    return result
 
 
 def save_raw_parquet(df: pd.DataFrame, symbol: str, interval: str = "1h") -> Path:
