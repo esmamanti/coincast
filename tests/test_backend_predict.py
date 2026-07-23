@@ -78,6 +78,15 @@ class BackendPredictTests(unittest.TestCase):
         self.assertEqual(payload["horizon"], 1)
         self.assertEqual(len(payload["coins"]), 13)
 
+    def test_all_quality_endpoint_returns_every_shadow_strategy(self):
+        response = self.client.get("/quality/all?horizon=1&limit=1")
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(payload["horizon"], 1)
+        self.assertEqual(len(payload["strategies"]), 13)
+        self.assertIn("shadow", payload["strategies"][0])
+        self.assertIn("quality", payload["strategies"][0])
+
 
 if __name__ == "__main__":
     unittest.main()

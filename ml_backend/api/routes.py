@@ -166,6 +166,34 @@ def all_prediction_performance(
         raise_api_error(exc)
 
 
+@router.get("/quality")
+def model_quality(
+    symbol: str = Query(min_length=5, max_length=20),
+    horizon: int = Query(default=1),
+    limit: int = Query(default=20, ge=1, le=100),
+) -> dict:
+    try:
+        if horizon not in (1, 4, 24):
+            raise ValueError("Supported horizons are [1, 4, 24]")
+        return trading_service.quality_report(normalize_symbol(symbol), horizon, limit=limit)
+    except Exception as exc:
+        raise_api_error(exc)
+
+
+@router.get("/quality/all")
+def all_model_quality(
+    horizon: int = Query(default=1),
+    limit: int = Query(default=5, ge=1, le=20),
+) -> dict:
+    try:
+        if horizon not in (1, 4, 24):
+            raise ValueError("Supported horizons are [1, 4, 24]")
+        reports = trading_service.quality_reports(COINCAST_SYMBOLS, horizon, limit=limit)
+        return {"horizon": horizon, "strategies": reports}
+    except Exception as exc:
+        raise_api_error(exc)
+
+
 @router.get("/report/daily/preview")
 def preview_daily_report() -> dict:
     return daily_report_service.build()

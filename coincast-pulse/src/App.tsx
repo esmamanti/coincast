@@ -53,9 +53,40 @@ type PredictionPerformance = {
   recent: PerformanceRecord[];
 };
 
-type AllPerformanceResponse = {
+type ShadowPortfolio = {
+  strategy_key: string;
+  initial_cash: number;
+  equity: number;
+  net_return: number;
+  max_drawdown: number;
+  trade_count: number;
+  closed_trades: number;
+  win_rate: number | null;
+  fees_paid: number;
+  realized_pnl: number;
+  open_position: null | { quantity: number; entry_price: number; last_price: number; position_value: number };
+};
+
+type QualityGate = {
+  status: 'INSUFFICIENT_DATA' | 'INSUFFICIENT_TRADES' | 'CANDIDATE' | 'REJECTED';
+  status_label: string;
+  sample_progress: number;
+  checks: Record<string, boolean>;
+  failed_checks: string[];
+  thresholds: { minimum_resolved_predictions: number; minimum_closed_trades: number };
+};
+
+type QualityReport = {
+  symbol: string;
   horizon: number;
-  coins: PredictionPerformance[];
+  performance: PredictionPerformance;
+  shadow: ShadowPortfolio;
+  quality: QualityGate;
+};
+
+type AllQualityResponse = {
+  horizon: number;
+  strategies: QualityReport[];
 };
 
 type DailyReportPreview = {
@@ -71,6 +102,8 @@ type SignalResponse = {
   risk: { allowed: boolean; reason: string; quote_amount: number };
   account: Account;
   performance: PredictionPerformance;
+  shadow: ShadowPortfolio;
+  quality: QualityGate;
 };
 
 type PaperResult = {
@@ -104,7 +137,7 @@ function App() {
   const [horizon, setHorizon] = useState(1);
   const [refreshKey, setRefreshKey] = useState(0);
   const [signal, setSignal] = useState<SignalResponse | null>(null);
-  const [allPerformance, setAllPerformance] = useState<PredictionPerformance[]>([]);
+  const [allQuality, setAllQuality] = useState<QualityReport[]>([]);
   const [dailyReport, setDailyReport] = useState<DailyReportPreview | null>(null);
   const [paperResult, setPaperResult] = useState<PaperResult | null>(null);
   const [loading, setLoading] = useState(true);
@@ -131,10 +164,10 @@ function App() {
         if (!response.ok) throw new Error(body.detail || `İstek başarısız: ${response.status}`);
         if (active) setSignal(body);
 
-        const performanceResponse = await fetch(`${API_URL}/performance/all?horizon=${horizon}&limit=5`);
-        const performanceBody: AllPerformanceResponse = await performanceResponse.json();
+        const performanceResponse = await fetch(`${API_URL}/quality/all?horizon=${horizon}&limit=5`);
+        const performanceBody: AllQualityResponse = await performanceResponse.json();
         if (!performanceResponse.ok) throw new Error(`Toplu başarı verisi alınamadı: ${performanceResponse.status}`);
-        if (active) setAllPerformance(performanceBody.coins);
+        if (active) setAllQuality(performanceBody.strategies);
 
         const reportResponse = await fetch(`${API_URL}/report/daily/preview`);
         const reportBody: DailyReportPreview = await reportResponse.json();
@@ -237,12 +270,12 @@ function App() {
       )}
 
       {signal && (
-        <PerformancePanel performance={signal.performance} />
+        <PerformancePanel performance={signal.performance} shadow={signal.shadow} quality={signal.quality} />
       )}
 
-      {signal && allPerformance.length > 0 && (
+      {signal && allQuality.length > 0 && (
         <AllCoinsPerformance
-          coins={allPerformance}
+          reports={allQuality}
           selectedSymbol={selectedSymbol}
           horizon={horizon}
           onSelect={setSelectedSymbol}
@@ -270,12 +303,15 @@ function Metric({ label, value, color }: { label: string; value: string; color?:
   return <div style={{ padding: '0.9rem', background: 'white', borderRadius: 10 }}><small style={{ color: '#64748b' }}>{label}</small><div style={{ fontWeight: 750, fontSize: '1.25rem', color }}>{value}</div></div>;
 }
 
-function PerformancePanel({ performance }: { performance: PredictionPerformance }) {
+function PerformancePanel({ performance, shadow, quality }: { performance: PredictionPerformance; shadow: ShadowPortfolio; quality: QualityGate }) {
   const hasResults = performance.resolved_predictions > 0;
   const ratio = performance.price_improvement_ratio;
   return (
     <section style={{ marginTop: '1rem', border: '1px solid #e2e8f0', borderRadius: 16, padding: '1.25rem', background: 'white' }}>
-      <h2 style={{ margin: '0 0 0.35rem', fontSize: '1.2rem' }}>Geçmiş Tahmin Başarısı</h2>
+      <div style={{ display: 'flex', justifyContent: 'space-between', gap: '0.8rem', alignItems: 'center', flexWrap: 'wrap' }}>
+        <h2 style={{ margin: '0 0 0.35rem', fontSize: '1.2rem' }}>Geçmiş Tahmin Başarısı</h2>
+        <QualityBadge quality={quality} />
+      </div>
       <p style={{ margin: '0 0 1rem', color: '#475569' }}>
         {hasResults
           ? `${performance.symbol} için ${performance.horizon} saatlik canlı tahminlerin gerçekleşen sonuçları.`
@@ -289,6 +325,26 @@ function PerformancePanel({ performance }: { performance: PredictionPerformance 
         <Metric label="Değişmez fiyat hatası" value={performance.naive_mae === null ? '—' : formatPrice(performance.naive_mae)} />
         <Metric label="Modele avantaj oranı" value={ratio === null ? '—' : `${ratio.toFixed(2)}×`} color={ratio === null ? undefined : ratio > 1 ? '#15803d' : '#b91c1c'} />
         <Metric label="Tahmin bandı başarısı" value={percentOrDash(performance.interval_coverage)} />
+      </div>
+
+      <div style={{ marginTop: '0.9rem', padding: '0.85rem', background: '#f8fafc', borderRadius: 10 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', color: '#475569', fontSize: '0.86rem' }}>
+          <span>Kalite örnek ilerlemesi</span>
+          <strong>{performance.resolved_predictions} / {quality.thresholds.minimum_resolved_predictions}</strong>
+        </div>
+        <div style={{ height: 8, background: '#e2e8f0', borderRadius: 999, marginTop: '0.45rem', overflow: 'hidden' }}>
+          <div style={{ width: `${quality.sample_progress * 100}%`, height: '100%', background: quality.status === 'CANDIDATE' ? '#16a34a' : '#2563eb' }} />
+        </div>
+      </div>
+
+      <h3 style={{ fontSize: '1rem', marginBottom: '0.65rem' }}>Bağımsız shadow portföy</h3>
+      <div style={{ display: 'grid', gap: '0.8rem', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))' }}>
+        <Metric label="Net getiri" value={percentSigned(shadow.net_return)} color={shadow.net_return > 0 ? '#15803d' : shadow.net_return < 0 ? '#b91c1c' : undefined} />
+        <Metric label="Kapanan işlem" value={`${shadow.closed_trades} / ${quality.thresholds.minimum_closed_trades}`} />
+        <Metric label="Kazanma oranı" value={percentOrDash(shadow.win_rate)} />
+        <Metric label="Maksimum düşüş" value={percentSigned(shadow.max_drawdown)} />
+        <Metric label="Ödenen maliyet" value={`${shadow.fees_paid.toFixed(2)} USDT`} />
+        <Metric label="Açık pozisyon" value={shadow.open_position ? 'Var' : 'Yok'} />
       </div>
 
       {hasResults && (
@@ -330,56 +386,59 @@ function PerformancePanel({ performance }: { performance: PredictionPerformance 
 }
 
 function AllCoinsPerformance({
-  coins,
+  reports,
   selectedSymbol,
   horizon,
   onSelect,
 }: {
-  coins: PredictionPerformance[];
+  reports: QualityReport[];
   selectedSymbol: string;
   horizon: number;
   onSelect: (symbol: string) => void;
 }) {
-  const resolvedTotal = coins.reduce((sum, coin) => sum + coin.resolved_predictions, 0);
-  const pendingTotal = coins.reduce((sum, coin) => sum + coin.pending_predictions, 0);
+  const resolvedTotal = reports.reduce((sum, report) => sum + report.performance.resolved_predictions, 0);
+  const pendingTotal = reports.reduce((sum, report) => sum + report.performance.pending_predictions, 0);
   return (
     <section style={{ marginTop: '1rem', border: '1px solid #bfdbfe', borderRadius: 16, padding: '1.25rem', background: '#eff6ff' }}>
-      <h2 style={{ margin: '0 0 0.35rem', fontSize: '1.2rem' }}>Bütün Coinlerin Tahmin Başarısı</h2>
+      <h2 style={{ margin: '0 0 0.35rem', fontSize: '1.2rem' }}>39 Model Kalite Kapısı ve Shadow Portföy</h2>
       <p style={{ margin: '0 0 1rem', color: '#475569' }}>
-        13 coinin {horizon} saatlik sonuçları · {resolvedTotal} sonuçlandı · {pendingTotal} bekliyor
+        13 coinin {horizon} saatlik bağımsız stratejileri · {resolvedTotal} sonuçlandı · {pendingTotal} bekliyor
       </p>
       <div style={{ overflowX: 'auto' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 790, background: 'white', borderRadius: 10 }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 930, background: 'white', borderRadius: 10 }}>
           <thead>
             <tr style={{ color: '#475569', textAlign: 'left', borderBottom: '1px solid #cbd5e1' }}>
               <th style={tableCell}>Coin</th>
-              <th style={tableCell}>Sonuç / bekleyen</th>
+              <th style={tableCell}>Kalite</th>
+              <th style={tableCell}>Örnek</th>
               <th style={tableCell}>Yön doğruluğu</th>
-              <th style={tableCell}>Model MAE</th>
-              <th style={tableCell}>Değişmez MAE</th>
               <th style={tableCell}>Avantaj</th>
-              <th style={tableCell}>Band başarısı</th>
+              <th style={tableCell}>Shadow getiri</th>
+              <th style={tableCell}>Kapanan işlem</th>
+              <th style={tableCell}>Maks. düşüş</th>
             </tr>
           </thead>
           <tbody>
-            {coins.map((coin) => {
-              const selected = coin.symbol === selectedSymbol;
+            {reports.map((report) => {
+              const coin = report.performance;
+              const selected = report.symbol === selectedSymbol;
               const ratio = coin.price_improvement_ratio;
               return (
-                <tr key={coin.symbol} style={{ borderBottom: '1px solid #e2e8f0', background: selected ? '#dbeafe' : 'white' }}>
+                <tr key={report.symbol} style={{ borderBottom: '1px solid #e2e8f0', background: selected ? '#dbeafe' : 'white' }}>
                   <td style={tableCell}>
-                    <button onClick={() => onSelect(coin.symbol)} style={{ border: 0, padding: 0, background: 'transparent', color: '#1d4ed8', fontWeight: 800, cursor: 'pointer' }}>
-                      {coin.symbol.replace('USDT', '')}
+                    <button onClick={() => onSelect(report.symbol)} style={{ border: 0, padding: 0, background: 'transparent', color: '#1d4ed8', fontWeight: 800, cursor: 'pointer' }}>
+                      {report.symbol.replace('USDT', '')}
                     </button>
                   </td>
-                  <td style={tableCell}>{coin.resolved_predictions} / {coin.pending_predictions}</td>
+                  <td style={tableCell}><QualityBadge quality={report.quality} compact /></td>
+                  <td style={tableCell}>{coin.resolved_predictions} / {report.quality.thresholds.minimum_resolved_predictions}</td>
                   <td style={tableCell}>{percentOrDash(coin.direction_accuracy)}</td>
-                  <td style={tableCell}>{coin.mae === null ? '—' : formatPrice(coin.mae)}</td>
-                  <td style={tableCell}>{coin.naive_mae === null ? '—' : formatPrice(coin.naive_mae)}</td>
                   <td style={{ ...tableCell, color: ratio === null ? '#64748b' : ratio > 1 ? '#15803d' : '#b91c1c', fontWeight: 700 }}>
                     {ratio === null ? '—' : `${ratio.toFixed(2)}×`}
                   </td>
-                  <td style={tableCell}>{percentOrDash(coin.interval_coverage)}</td>
+                  <td style={{ ...tableCell, color: report.shadow.net_return > 0 ? '#15803d' : report.shadow.net_return < 0 ? '#b91c1c' : '#64748b', fontWeight: 700 }}>{percentSigned(report.shadow.net_return)}</td>
+                  <td style={tableCell}>{report.shadow.closed_trades}</td>
+                  <td style={tableCell}>{percentSigned(report.shadow.max_drawdown)}</td>
                 </tr>
               );
             })}
@@ -387,7 +446,7 @@ function AllCoinsPerformance({
         </table>
       </div>
       <small style={{ display: 'block', color: '#64748b', marginTop: '0.75rem' }}>
-        Coin adına tıklayarak ayrıntılı tahmin ve geçmiş sonuçlarını açabilirsiniz.
+        Her satır 10.000 USDT başlangıçlı bağımsız shadow hesaptır. Coin adına tıklayarak ayrıntıları açabilirsiniz.
       </small>
     </section>
   );
@@ -415,10 +474,25 @@ function DailyReportPanel({ report }: { report: DailyReportPreview }) {
   );
 }
 
+function QualityBadge({ quality, compact = false }: { quality: QualityGate; compact?: boolean }) {
+  const colors: Record<QualityGate['status'], { background: string; color: string }> = {
+    INSUFFICIENT_DATA: { background: '#dbeafe', color: '#1d4ed8' },
+    INSUFFICIENT_TRADES: { background: '#fef3c7', color: '#92400e' },
+    CANDIDATE: { background: '#dcfce7', color: '#166534' },
+    REJECTED: { background: '#fee2e2', color: '#991b1b' },
+  };
+  return <span style={{ ...colors[quality.status], display: 'inline-block', padding: compact ? '0.25rem 0.45rem' : '0.4rem 0.65rem', borderRadius: 999, fontSize: compact ? '0.75rem' : '0.85rem', fontWeight: 800, whiteSpace: 'nowrap' }}>{quality.status_label}</span>;
+}
+
 const tableCell = { padding: '0.65rem 0.5rem', whiteSpace: 'nowrap' as const };
 
 function percentOrDash(value: number | null) {
   return value === null ? '—' : `%${(value * 100).toFixed(1)}`;
+}
+
+function percentSigned(value: number) {
+  const sign = value > 0 ? '+' : '';
+  return `${sign}%${(value * 100).toFixed(2)}`;
 }
 
 function formatPrice(value: number) {

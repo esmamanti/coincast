@@ -9,6 +9,7 @@ sys.path.insert(0, str(ROOT))
 from src.trading.paper_broker import PaperBroker
 from src.trading.prediction_tracker import PredictionTracker
 from src.trading.service import TradingService
+from src.trading.shadow_portfolio import ShadowPortfolioBroker
 
 
 class FakeInference:
@@ -52,20 +53,24 @@ class PaperTradingTests(unittest.TestCase):
     def setUp(self):
         self.db_path = ROOT / "tests" / f"paper_{uuid.uuid4().hex}.sqlite3"
         self.tracking_db_path = ROOT / "tests" / f"tracking_{uuid.uuid4().hex}.sqlite3"
+        self.shadow_db_path = ROOT / "tests" / f"shadow_{uuid.uuid4().hex}.sqlite3"
         self.broker = PaperBroker(self.db_path, initial_cash=10_000)
         self.inference = FakeInference()
         self.notifier = FakeNotifier()
         self.tracker = PredictionTracker(self.tracking_db_path)
+        self.shadow_broker = ShadowPortfolioBroker(self.shadow_db_path)
         self.service = TradingService(
             inference=self.inference,
             broker=self.broker,
             notifier=self.notifier,
             tracker=self.tracker,
+            shadow_broker=self.shadow_broker,
         )
 
     def tearDown(self):
         self.db_path.unlink(missing_ok=True)
         self.tracking_db_path.unlink(missing_ok=True)
+        self.shadow_db_path.unlink(missing_ok=True)
 
     def test_buy_then_sell_cycle_persists_trades_and_reports(self):
         buy = self.service.run_paper_cycle("BTCUSDT", horizon=1)

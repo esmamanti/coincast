@@ -7,7 +7,9 @@ from ml_backend.inference.service import InferenceService
 from src.trading.notifications import TradeNotifier
 from src.trading.paper_broker import PaperBroker
 from src.trading.prediction_tracker import PredictionTracker
+from src.trading.quality_gate import ModelQualityGate
 from src.trading.risk import RiskEngine, RiskLimits
+from src.trading.shadow_portfolio import ShadowPortfolioBroker
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -21,6 +23,8 @@ class TradingService:
         notifier: TradeNotifier | None = None,
         risk_engine: RiskEngine | None = None,
         tracker: PredictionTracker | None = None,
+        shadow_broker: ShadowPortfolioBroker | None = None,
+        quality_gate: ModelQualityGate | None = None,
     ) -> None:
         db_path = os.getenv("PAPER_DB_PATH", str(ROOT / "data" / "paper_trading.sqlite3"))
         initial_cash = float(os.getenv("PAPER_INITIAL_CASH", "10000"))
@@ -28,6 +32,15 @@ class TradingService:
         self.broker = broker or PaperBroker(db_path, initial_cash=initial_cash)
         tracking_db_path = os.getenv("PREDICTION_DB_PATH", str(ROOT / "data" / "prediction_tracking.sqlite3"))
         self.tracker = tracker or PredictionTracker(tracking_db_path)
+        shadow_db_path = os.getenv("SHADOW_DB_PATH", str(ROOT / "data" / "shadow_portfolios.sqlite3"))
+        self.shadow_broker = shadow_broker or ShadowPortfolioBroker(
+            shadow_db_path,
+            initial_cash=float(os.getenv("SHADOW_INITIAL_CASH", "10000")),
+            position_fraction=float(os.getenv("SHADOW_POSITION_FRACTION", "0.10")),
+            fee_rate=float(os.getenv("SHADOW_FEE_RATE", "0.001")),
+            slippage_rate=float(os.getenv("SHADOW_SLIPPAGE_RATE", "0.0005")),
+        )
+        self.quality_gate = quality_gate or ModelQualityGate()
         self.notifier = notifier or TradeNotifier()
         self.risk_engine = risk_engine or RiskEngine(
             RiskLimits(
@@ -82,10 +95,48 @@ class TradingService:
         if market_frame is not None:
             self.tracker.resolve_with_candles(prediction["symbol"], prediction["interval"], market_frame)
         performance = self.tracker.performance(prediction["symbol"], prediction["horizon"])
+        shadow_result = self.shadow_broker.process_signal(prediction, action)
+        quality = self.quality_gate.evaluate(performance, shadow_result["portfolio"])
         return {
             "prediction": prediction,
             "action": action,
             "performance": performance,
+            "shadow": shadow_result["portfolio"],
+            "quality": quality,
+        }
+
+    def quality_report(self, symbol: str, horizon: int, limit: int = 5) -> dict:
+        performance = self.tracker.performance(symbol, horizon, limit=limit)
+        shadow = self.shadow_broker.snapshot(symbol, horizon)
+        return {
+            "symbol": symbol,
+            "horizon": int(horizon),
+            "performance": performance,
+            "shadow": shadow,
+            "quality": self.quality_gate.evaluate(performance, shadow),
+        }
+
+    def quality_reports(self, symbols: list[str], horizon: int, limit: int = 5) -> list[dict]:
+        return [self.quality_report(symbol, horizon, limit=limit) for symbol in symbols]
+
+    def backfill_shadow_portfolios(self, symbols: list[str], horizons: list[int]) -> dict:
+        processed = 0
+        duplicates = 0
+        strategies = 0
+        for symbol in symbols:
+            for horizon in horizons:
+                strategies += 1
+                for record in self.tracker.history(symbol, horizon):
+                    action = record.pop("action")
+                    result = self.shadow_broker.process_signal(record, action)
+                    if result["processed"]:
+                        processed += 1
+                    else:
+                        duplicates += 1
+        return {
+            "strategies": strategies,
+            "processed_signals": processed,
+            "duplicate_signals": duplicates,
         }
 
     def run_paper_cycle(self, symbol: str, horizon: int = 1) -> dict:

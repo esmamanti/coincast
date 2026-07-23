@@ -233,3 +233,29 @@ class PredictionTracker:
 
     def performance_many(self, symbols: list[str], horizon: int, limit: int = 5) -> list[dict]:
         return [self.performance(symbol, horizon, limit=limit) for symbol in symbols]
+
+    def history(self, symbol: str, horizon: int, limit: int = 10_000) -> list[dict]:
+        safe_limit = max(1, min(int(limit), 100_000))
+        with self._connect() as connection:
+            rows = connection.execute(
+                """
+                SELECT symbol, horizon, model_id, data_timestamp, current_price,
+                       predicted_return, action
+                FROM forecasts
+                WHERE symbol = ? AND horizon = ?
+                ORDER BY data_timestamp ASC LIMIT ?
+                """,
+                (symbol, int(horizon), safe_limit),
+            ).fetchall()
+        return [
+            {
+                "symbol": row["symbol"],
+                "horizon": int(row["horizon"]),
+                "model_id": row["model_id"],
+                "data_timestamp": row["data_timestamp"],
+                "current_price": float(row["current_price"]),
+                "predicted_return": float(row["predicted_return"]),
+                "action": row["action"],
+            }
+            for row in rows
+        ]
